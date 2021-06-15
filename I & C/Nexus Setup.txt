@@ -1,0 +1,128 @@
+NEXUS:-
+*******
+docker run -d -p 8081:8081 -p 8082:8082 -p 8085:8085 --name nexus sonatype/nexus:pro
+
+wget -O /tmp/nexus.tar.gz http://download.sonatype.com/nexus/3/latest-unix.tar.gz
+
+https://stackoverflow.com/questions/57028412/how-to-install-nexus-on-ubuntu-18-04
+
+https://www.fosstechnix.com/how-to-install-nexus-repository-on-ubuntu/
+
+https://devopscube.com/how-to-install-latest-sonatype-nexus-3-on-linux/
+__________________________
+MAVEN NEXUS Configuration:-
+**************************
+https://blog.sonatype.com/using-nexus-3-as-your-repository-part-1-maven-artifacts
+
+https://repo.maven.apache.org/maven2
+
+<distributionManagement>
+  <repository>
+    <id>Maven_Hosted_Releases</id>
+    <url>http://52.66.226.179:8081/nexus/content/repositories/Maven_Hosted_Releases</url>
+  </repository>
+</distributionManagement>
+
+<distributionManagement>
+  <snapshotRepository>
+    <id>Maven_Hosted_Snapshots</id>
+    <url>http://52.66.226.179:8081/nexus/content/repositories/Maven_Hosted_Snapshots</url>
+  </snapshotRepository>
+</distributionManagement>
+
+https://github.com/devops-school/helloworld-java-maven
+_________________________________________________________
+vi /opt/maven/apache-maven-3.6.3/conf/settings.xml
+
+<!--v Anothe> sample, using keys to authenticate.-->
+<server>
+  <id>debasish</id>
+  <username>admin</username>
+  <password>admin123</password>
+</server>
+<server>
+<privateKey>/path/to/private/key</privateKey>
+<passphrase>optional; leave empty if not used.</passphrase>
+</server>
+</servers>
+_______________________________________________
+vi pom.xml
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>http://34.227.171.74:8081/nexus/content/repositories/maven_hosted_release</url>
+    </repository>
+  </repositories>
+
+
+  <mirrors>
+    <mirror>
+      <id>central</id>
+      <name>central</name>
+      <url>http://your-host:8081/repository/maven-group/</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+------------------------------
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>http://65.1.12.97:8081/nexus/content/groups/maven_group/</url>
+    </repository>
+  </repositories>
+  
+  <distributionManagement>
+    <repository>
+      <id>debasish</id>
+      <url>http://65.1.12.97:8081/nexus/content/repositories/Maven_Hosted_Releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>debasish</id>
+      <url>http://65.1.12.97:8081/nexus/content/repositories/Maven_Hosted_Snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+--------------------------------
+https://github.com/Eronarn/deploying-applications-with-ansible
+https://github.com/idealista/tomcat_role
+https://github.com/zaxos/tomcat-ansible-role
+https://github.com/geerlingguy/ansible-role-docker
+___________________________
+Docker NEXUS Configuration:-
+***************************
+https://blog.sonatype.com/using-nexus-3-as-your-repository-part-3-docker-images
+_______________
+(On Docker m/c)
+***************
+vi /etc/docker/daemon.json: 
+
+{
+  "insecure-registries": [
+    "172.31.17.148:8082",
+    "172.31.17.148:8083",
+    "172.31.17.148:8084"
+  ]
+}
+
+systemctl restart docker
+
+docker login -u admin -p admin123 172.31.17.148:8082   (host)
+docker login -u admin -p admin123 172.31.17.148:8083   (proxy)
+docker login -u admin -p admin123 172.31.17.148:8084   (group)
+
+cat ~/.docker/config.json
+
+{
+	"auths": {
+		"your-repo:8082": {
+			"auth": "YWRtaW46YWRtaW4xMjM="
+		},
+		"your-repo:8083": {
+			"auth": "YWRtaW46YWRtaW4xMjM="
+		}
+}
+
+docker tag your-own-image:1 your-repo:8083/your-own-image:1
+docker push your-repo:8083/your-own-image:1
+
+docker pull your-repo:8083/your-own-image:1

@@ -1,0 +1,58 @@
+
+Step 1: indentify your network - wired or wireless
+
+step 2. Right click on the network connection that is identified and select the option "Open Netwok and Sharing Center", it will open new window.
+
+step 3: In new windows, look for the option, "Change Adapter Settings" and then  click on it.
+
+Step 4 : Identification
+
+		Wired --> Realtek
+
+		Wireless -->  Dell Wireless
+
+Step 5 : In VM Box, Please select the image that is required , & click on settings, it will open a window, in that , select "Network"
+
+
+   - Make sure we check the option Enable Network Adapter
+
+   - Attached to should be Bridged Adapter
+
+   - Select "Name" based on the network Connection Type( wired or Wireless)
+
+   - Then expand "Advanced", then change the value of "Promiscuous mode o Allow All
+
+   - Make sure that "Cable connected" is checked whether it is a wired or wireless connection. 
+
+
+Step 6 : Start the Image(Linux), and login into PC
+
+Step 7 : enter command to activate the network,  # nmtui 
+
+	- we will get a window, --> select "Activate a Connection"
+
+	- Make sure that we activate it.
+	
+	- Quit from nmtui window.
+
+
+Step 8 : to get IP address use command, # hostname -I
+
+		or 
+
+	# ip addr show
+
+	....
+	....
+
+	identify network adapter(enp0s3) --> inet value
+
+
+		or 
+
+	# ifconfig
+
+	note: to install this # yum install net-tools
+
+
+

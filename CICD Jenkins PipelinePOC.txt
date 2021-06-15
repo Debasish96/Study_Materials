@@ -1,0 +1,33 @@
+pipeline {
+   agent any
+      stages { 
+      stage ('Clone') {
+         steps {
+   	   // Get some code from a GitHub repository
+            git <url>
+         }
+      }
+
+      stage('Build') {
+         steps {            
+            // Run Maven on a Unix agent.
+            sh "mvn clean package"                                                                                                                                                                    
+         }
+      }
+
+         stage('S3-upload') {
+         steps {
+            sh 'pwd'
+            sh 'mv ./target/hello-1.0.war ./target/hello-$BUILD_NUMBER.war'
+            sh 'aws s3 cp /var/lib/jenkins/workspace/pipelines/target/hello-$BUILD_NUMBER.war s3://cicdd-artifactory/'
+         }
+      }
+
+        stage('Deploy') {
+         steps {
+           sh 'aws s3 cp s3://cicdd-artifactory/hello-$BUILD_NUMBER.war .'
+           sh  'scp hello-$BUILD_NUMBER.war root@10.0.5.70:/tmp/tomcatee/webapps/hello.war'           
+         }
+      }
+    }
+}

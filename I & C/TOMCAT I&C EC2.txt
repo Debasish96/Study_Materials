@@ -1,0 +1,50 @@
+sudo su
+yum update -y
+yum install wget -y
+yum install java-1.8*
+java -version
+cd /opt
+mkdir tomcat
+cd tomcat
+wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.46/bin/apache-tomcat-9.0.46.tar.gz
+tar -xvf apache-tomcat-9.0.46.tar.gz
+rm -rf apache-tomcat-9.0.46.tar.gz
+yum update -y
+cd apache-tomcat-9.0.46/bin/
+chmod +x startup.sh
+chmod +x shutdown.sh
+echo $PATH
+ln -s /opt/tomcat/apache-tomcat-9.0.46/bin/startup.sh /usr/bin/tomcatup
+ln -s /opt/tomcat/apache-tomcat-9.0.46/bin/shutdown.sh /usr/bin/tomcatdown
+tomcatup
+
+ps -ef |grep tomcat-
+cd ..
+cd conf/
+ls
+vi server.xml  (change port to 8090)
+tomcatdown
+tomcatup
+
+find / -name context.xml
+vi /opt/tomcat/apache-tomcat-9.0.46/webapps/host-manager/META-INF/context.xml
+vi /opt/tomcat/apache-tomcat-9.0.46/webapps/manager/META-INF/context.xml
+	<--! <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> -->
+
+tomcatdown
+tomcatup
+ls
+
+vi tomcat-users.xml
+  <role rolename="manager-gui"/>
+  <role rolename="manager-status"/>
+  <role rolename="manager-script"/>
+  <role rolename="manager-jmx"/>
+  <user name="admin" password="admin" roles="manager-gui,manager-status,manager-script,manager-jmx"/>
+  <user name="deployer" password="deployer" roles="manager-script"/>
+  <user username="tomcat" password="tomcat" roles="manager-gui"/>
+
+
+tomcatdown
+tomcatup

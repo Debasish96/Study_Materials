@@ -1,0 +1,107 @@
+
+Stage 1 - install all prerequisites softwares
+
+#  yum install -y httpd php gcc glibc glibc-common gd gd-devel make net-snmp perl perl-devel open-ssl
+
+Then, start httpd service
+
+# service httpd start
+
+To start service a boot time
+
+# chkconfig httpd on
+
+
+Stage 2 - SETUP USER ACCOUNTS
+
+
+Now create a new nagios user account and setup a password to this account
+
+# useradd nagios
+# passwd nagios
+
+Now create a group for nagios setup “nagcmd” and add nagios user to this group. Also add nagios user in apache group.
+
+# groupadd nagcmd
+# usermod -a -G nagcmd nagios
+# usermod -a -G nagcmd apache
+
+
+ 
+Stage 3 - INSTALL NAGIOS CORE SERVICES
+
+ Download latest Nagios core service from the official site.
+
+# cd /opt/
+# wget <link>
+# tar xzf nagios-4.4.1.tar.gz
+# cd nagios-4.4.1
+# ./configure --with-command-group=nagcmd (yum install unzip -y)
+# make all
+# make install
+# make install-init
+# make install-config
+# make install-commandmode
+
+Now use below command to setup apache configuration for Nagios installation.
+
+# make install-webconf
+
+
+Stage 4 – Configure Apache Authentication
+
+We need to setup apache authentication for user nagiosadmin.
+
+Do not change this username. else you would required more changes in configuration.
+
+# htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+
+Now restart Apache service to make the new settings take effect.
+
+# service httpd restart
+
+
+Stage 5 - INSTALL NAGIOS PLUG-IN’S
+
+Download latest nagios-plugins source and install using following commands.
+
+# cd /opt
+	# wget http://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+	# tar xzf nagios-plugins-2.2.1.tar.gz
+        # cd nagios-plugins-2.2.1
+
+
+Now compile and install nagios plugins
+
+ 	#./configure --with-nagios-user=nagios --with-nagios-group=nagios
+	# make
+	# make install
+
+STage 6 - VERIFY AND START NAGIOS
+
+First, verify the Nagios configuration file using the following command.
+
+# /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+
+If there are not error, lets start the Nagios service
+
+# service nagios start
+
+# chkconfig nagios on
+
+# service firewalld stop
+
+
+Stage 7 - ACCESS NAGIOS USING WEB BROWSER
+
+
+		http://hostname/nagios
+
+
+Refer article for nagios installation -
+
+https://support.nagios.com/kb/article.php?id=96
+
+
+

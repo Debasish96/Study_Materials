@@ -1,0 +1,46 @@
+Ansible Installation
+********************
+(Do it in all m/c)
+--------------------------------------------
+useradd ansible
+passwd ansible  <Debasish@123>
+
+visudo  (add below line)
+ansible	ALL=(ALL)	NOPASSWD: ALL
+
+vi /etc/ssh/sshd_config
+# To disable tunneled clear text passwords, change to no here!
+PasswordAuthentication yes
+#PermitEmptyPasswords no
+#PasswordAuthentication no
+
+service sshd restart
+--------------------------------------------
+Installation:-
+
+wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum install epel-release-latest-7.noarch.rpm -y
+sudo yum update -y
+sudo yum install git python python-devel python-pip openssl ansible -y
+ansible --version
+sudo yum update -y
+
+vi /etc/ansible/ansible.cfg  (Enable below lines)
+inventory      = /etc/ansible/hosts
+sudo_user      = root
+
+vi /etc/ansible/hosts
+# Ex 1: Ungrouped hosts, specify before any group headers.
+[mygrp]
+172.31.13.51  (node IPs)
+
+--------------------------------------------
+(On Server m/c)
+
+sudo su - ansible
+whoami
+sudo yum update -y
+ssh <Node-Private-IP> (Ask pwd)
+ssh-keygen (id_rsa & id_rsa.pub get created)
+ssh-copy-id ansible@<Private-IP>
+ssh <Node-Private-IP>

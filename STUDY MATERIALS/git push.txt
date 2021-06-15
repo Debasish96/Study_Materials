@@ -1,0 +1,6 @@
+ git config --global user.name "Debasish7"
+ git config --global user.email "babul.debasish046@gmail.com"
+
+
+git push origin master
+git push --set-upstream origin <new-branch>

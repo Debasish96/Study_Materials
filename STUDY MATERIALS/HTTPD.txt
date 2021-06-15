@@ -1,0 +1,51 @@
+						How to install Apache on RHEL 8 / CentOS 8 Linux
+						````````````````````````````````````````````````
+*First step is to use dnf command to install package called httpd:
+
+	# dnf install httpd
+
+*Run and enable the Apache webserver to start after reboot:
+
+	# systemctl enable httpd
+	# systemctl start httpd
+
+*Optionally, if you need your Apache web server to be accessed from remote locations open HTTP firewall port 80:
+
+	# firewall-cmd --zone=public --permanent --add-service=http
+	# firewall-cmd --reload
+
+*Insert your website files.
+ By default the Apache web server will greet you with a default welcome page.To disable the default Apache welcome page insert your index.html into /var/www/html/  directory. For example:
+
+	echo Apache on RHEL 8 / CentOS 8 > /var/www/html/index.html
+
+*Access your website.
+
+ To access your new sample website navigate your web browser to either 
+ http://YOUR-APACHE-IP-ADDRESS or 
+ http://YOUR-APACHE-HOSTNAME. 
+ For example http://192.168.1.151.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+						How to start service on boot with RHEL 8 / CentOS 8 Linux
+                                                `````````````````````````````````````````````````````````
+*Obtain the service name you wish to enable to start on boot.
+ There are many ways on how to accomplish this task. Perhaps the simplest solution is to list all currently disabled services using the systemctl command:
+	
+	# systemctl list-unit-files --state=disabled
+
+*The above command will create a long list of disabled services. Scroll through the list to find the service you wish to enable and take a note of the service name.   For example httpd.service
+ Use the systemctl command to enable the service in order to start after system boot. Note the suffix .service can be omitted:
+	
+	# systemctl enable httpd
+
+ In the above example we heave enabled the Apache httpd service to start during the system boot.
+
+*If you later on decide to disable any service to start on boot use the systemctl command once again as follows:
+	
+	# systemctl disable httpd
+
+
+
+
+

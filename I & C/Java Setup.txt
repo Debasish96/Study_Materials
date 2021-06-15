@@ -1,0 +1,62 @@
+Configuration of JAVA for LINUX
+
+Step 1 - Download java JDK-8 from official website of "ORACLE"
+	"https://www.oracle.com/java/technologies/javase-jdk8-downloads.html" 
+	
+	Download "Linux x64 Compressed Archive" (tar.gz file)
+
+Step 2 - Copy paste 'tar.gz' file in linux terminal by using "WinSCP"
+
+Step 3 - Move 'tar.gz' inside /apps 
+	
+	# mv jdk-8u291-linux-x64.tar.gz /opt
+	# cd /opt
+
+Step 4 - Untar it using below command
+
+	# tar -xvf jdk-8u291-linux-x64.tar.gz
+
+Step 5 - Create a directory 'java' & move untarred file into it.
+
+	# mkdir java
+	# rm -rf jdk-8u291-linux-x64.tar.gz
+	# mv jdk1.8.0_291 java
+
+Step 6 - Now, need to update the Java update-alternatives using below command
+
+	# cd java
+
+For java
+
+update-alternatives --install /usr/bin/java java /opt/java/jdk1.8.0_291/bin/java 100  
+update-alternatives --config java
+
+For JAVAC
+
+update-alternatives --install /usr/bin/javac javac /opt/java/jdk1.8.0_291/bin/javac 100 
+update-alternatives --config javac
+
+For JAR
+
+update-alternatives --install /usr/bin/jar jar /opt/java/jdk1.8.0_291/bin/jar 100  
+update-alternatives --config jar
+
+Step 7 - Exporting  Java Environment Variables
+
+export JAVA_HOME=/opt/java/jdk1.8.0_291/
+export JRE_HOME=/opt/java/jdk1.8.0_291/jre
+export PATH=$PATH:/opt/java/jdk1.8.0_291/bin:/opt/java/jdk1.8.0_291/jre/bin
+
+Step 8 - Verify
+
+	# java -version
+
+	# echo $JAVA_HOME
+
+-------------------------------------------------------------
+find /usr/lib/jvm/java-1.8* | head -n 3
+
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.282.b08-1.amzn2.0.1.x86_64
+export JRE_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.282.b08-1.amzn2.0.1.x86_64/jre
+export PATH=$PATH:/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.282.b08-1.amzn2.0.1.x86_64/jre/bin
+echo $JAVA_HOME

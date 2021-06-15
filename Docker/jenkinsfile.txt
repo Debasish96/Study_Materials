@@ -1,0 +1,81 @@
+usermod -aG docker jenkins
+usermod -aG docker ec2-user
+
+pipeline {
+    agent any
+
+    stages {
+        stage('git pull & compile') {
+            steps {
+                git 'https://github.com/Debasish96/hello-world.git'
+                sh '/opt/maven/apache-maven-3.6.3/bin/mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh '/opt/maven/apache-maven-3.6.3/bin/mvn test'
+            }
+        }
+        stage('package') {
+            steps {
+                sh '/opt/maven/apache-maven-3.6.3/bin/mvn clean package'
+            }
+        }
+        stage('docker image') {
+            steps {
+                sh 'docker build -t debasish7/sampleimg .'
+            }
+        }
+         stage('docker login & push') {
+            steps {
+                withCredentials([string(credentialsId: 'DockerHub', variable: 'Docker')]) {
+                sh 'docker login -u debasish7 -p ${Docker}'
+                }
+                sh 'docker push debasish7/sampleimg'
+            }
+        }
+        stage('run container on docker-host-ssh ') {
+            steps {
+                sshagent(['Docker_Server_SSH']) { 
+                     sh 'ssh -o StrictHostKeyChecking=no ec2-user@172.31.13.51 docker rm -f samplecontainer || true'
+                     sh 'ssh -o StrictHostKeyChecking=no ec2-user@172.31.13.51 docker run -d --name samplecontainer -p 8000:8000 debasish7/sampleimg /bin/bash'
+                }
+            }
+        }
+    }
+}
+
+
+
+
+pipeline {
+  agent any
+  stages {
+    stage('compile') {
+      steps {
+        git 'https://github.com/lerndevops/samplejavaapp.git'
+        sh '/opt/maven/apache-maven-3.6.3/bin/mvn compile'
+        sleep 10
+      }
+    }
+
+    stage('unit-test') {
+      post {
+        success {
+          junit 'target/surefire-reports/*.xml'
+        }
+
+      }
+      steps {
+        sh '/opt/maven/apache-maven-3.6.3/bin/mvn test'
+      }
+    }
+
+    stage('package') {
+      steps {
+        sh '/opt/maven/apache-maven-3.6.3/bin/mvn clean package'
+      }
+    }
+
+  }
+}

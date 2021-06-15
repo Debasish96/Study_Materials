@@ -1,0 +1,25 @@
+Configuration of GRADEL for LINUX
+
+Step 1. Download the latest Gradle distribution.(https://gradle.org/releases/) Download binary-only.
+
+Step 2. Copy paste '.zip' file in linux terminal by using "WinSCP"
+
+
+Step 3. Unpack the distribution
+
+Unzip the distribution zip file in the directory of your choosing, e.g.:
+
+	# mkdir /opt/gradle
+	# unzip -d /opt/gradle gradle-6.6.1-bin.zip
+	# ls /opt/gradle/gradle-6.6.1
+	LICENSE  NOTICE  bin  getting-started.html  init.d  lib  media
+
+Step 4. Configure your system environment
+
+Configure your PATH environment variable to include the bin directory of the unzipped distribution, e.g.:
+
+	# export PATH=$PATH:/opt/gradle/gradle-6.6.1/bin
+
+Step 4. Verify your installation
+
+	# gradle -v
